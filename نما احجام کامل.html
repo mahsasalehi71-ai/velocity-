@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#07111f" />
+<title>آزمایشگاه هندسه سه‌بعدی | مهسا صالحی | V5</title>
+<style>
+:root{
+  --bg:#07111f;
+  --panel:rgba(15,30,51,.84);
+  --panel-2:rgba(20,42,70,.72);
+  --line:rgba(148,163,184,.16);
+  --text:#f8fafc;
+  --muted:#9fb0c6;
+  --accent:#60a5fa;
+  --accent-2:#22d3ee;
+  --green:#22c55e;
+  --blue:#3b82f6;
+  --red:#ef4444;
+  --white:#f8fafc;
+  --cube-size:42px;
+  --radius:18px;
+  --shadow:0 22px 60px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  overflow:hidden;
+  color:var(--text);
+  font-family:Tahoma,"Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(37,99,235,.18), transparent 34%),
+    radial-gradient(circle at 82% 20%, rgba(34,211,238,.12), transparent 30%),
+    linear-gradient(160deg,#06101d 0%,#091828 55%,#06111f 100%);
+}
+button,select,input{font:inherit}
+button,select{outline:none}
+.app{height:100%;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;gap:10px;padding:12px}
+.glass{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+header{border-radius:var(--radius);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#2563eb,#06b6d4);box-shadow:0 10px 28px rgba(37,99,235,.28);font-weight:900;font-size:20px;flex:0 0 auto}
+.title-wrap{min-width:0}
+h1{font-size:clamp(1rem,2vw,1.28rem);margin:0 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.creator{font-size:.78rem;color:var(--muted)}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.select-wrap{display:flex;align-items:center;gap:8px;background:rgba(2,8,23,.38);border:1px solid var(--line);padding:7px 10px;border-radius:12px;color:var(--muted);font-size:.82rem}
+select{border:0;background:#10233b;color:#fff;border-radius:9px;padding:6px 9px;cursor:pointer;max-width:190px}
+.icon-btn{border:1px solid var(--line);background:rgba(15,36,60,.9);color:#dbeafe;width:38px;height:38px;border-radius:12px;cursor:pointer;display:grid;place-items:center;transition:.2s}
+.icon-btn:hover{transform:translateY(-1px);border-color:rgba(96,165,250,.48);background:#153253}
+.top-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
+.question{border-radius:16px;padding:12px 15px;line-height:1.8;font-size:.9rem;border-right:4px solid var(--accent-2)}
+.tabs{border-radius:16px;padding:6px;display:flex;gap:6px;align-items:center}
+.tab{border:0;color:#b7c6d8;background:transparent;padding:9px 13px;border-radius:11px;cursor:pointer;white-space:nowrap;transition:.2s}
+.tab.active{background:linear-gradient(135deg,rgba(37,99,235,.95),rgba(14,165,233,.92));color:white;box-shadow:0 8px 20px rgba(37,99,235,.22)}
+.workspace{min-height:0;display:grid;grid-template-columns:240px minmax(0,1fr);gap:10px}
+.side-panel{border-radius:var(--radius);padding:13px;display:flex;flex-direction:column;gap:12px;overflow:auto}
+.panel-title{font-size:.82rem;color:#dbeafe;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.legend{display:grid;gap:7px}
+.legend-item{display:grid;grid-template-columns:14px 1fr auto;align-items:center;gap:8px;padding:8px 9px;border-radius:11px;background:rgba(2,8,23,.28);border:1px solid rgba(148,163,184,.09);font-size:.8rem;cursor:pointer;transition:.2s}
+.legend-item:hover{border-color:rgba(96,165,250,.35);transform:translateX(-1px)}
+.legend-item.active{box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 0 0 1px rgba(96,165,250,.24)}
+.dot{width:12px;height:12px;border-radius:4px;border:1px solid rgba(255,255,255,.55)}
+.count{font-weight:800;color:#fff;background:rgba(255,255,255,.08);min-width:31px;text-align:center;padding:3px 6px;border-radius:8px}
+.formula{background:rgba(2,8,23,.34);border:1px solid var(--line);border-radius:13px;padding:10px;font-size:.77rem;color:var(--muted);line-height:1.8}
+.formula b{color:#e2e8f0}
+.control-block{display:grid;gap:7px}
+.range-box{display:grid;grid-template-columns:34px 1fr 34px;gap:6px;align-items:center}
+.range-box button{height:34px;border:1px solid var(--line);background:#10233b;color:white;border-radius:10px;cursor:pointer;font-weight:800}
+input[type=range]{width:100%;accent-color:#3b82f6}
+.scene{position:relative;min-height:410px;border-radius:var(--radius);overflow:hidden;perspective:1400px;cursor:grab;touch-action:none;display:flex;align-items:center;justify-content:center;background:
+ radial-gradient(circle at 50% 40%,rgba(51,65,85,.38),rgba(2,8,23,.74) 56%,rgba(2,8,23,.94)),
+ linear-gradient(180deg,rgba(30,64,175,.05),transparent 45%)}
+.scene:active{cursor:grabbing}
+.scene::before{content:"";position:absolute;inset:auto -20% -44% -20%;height:65%;background-image:linear-gradient(rgba(96,165,250,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(96,165,250,.07) 1px,transparent 1px);background-size:34px 34px;transform:perspective(460px) rotateX(64deg);transform-origin:center top;mask-image:linear-gradient(to bottom,#000,transparent 85%);pointer-events:none}
+.scene-badge{position:absolute;top:12px;right:12px;background:rgba(2,8,23,.58);border:1px solid var(--line);padding:7px 10px;border-radius:10px;font-size:.72rem;color:var(--muted);z-index:5;pointer-events:none;line-height:1.65}
+#cube-assembly{position:relative;transform-style:preserve-3d;transform:translate3d(0,0,0) rotateX(-20deg) rotateY(-45deg) scale(1);transition:transform .48s cubic-bezier(.2,.8,.2,1)}
+.cubie{position:absolute;width:var(--cube-size);height:var(--cube-size);transform-style:preserve-3d;transition:transform .55s cubic-bezier(.2,.8,.2,1),opacity .32s,filter .32s}
+.face{position:absolute;width:100%;height:100%;border:1px solid rgba(15,23,42,.58);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);backface-visibility:hidden;transition:background .28s,border-color .28s,box-shadow .28s;background:linear-gradient(145deg,#fff,#dce6f2)}
+.face-front{transform:rotateY(0deg) translateZ(calc(var(--cube-size)/2))}
+.face-back{transform:rotateY(180deg) translateZ(calc(var(--cube-size)/2))}
+.face-right{transform:rotateY(90deg) translateZ(calc(var(--cube-size)/2))}
+.face-left{transform:rotateY(-90deg) translateZ(calc(var(--cube-size)/2))}
+.face-top{transform:rotateX(90deg) translateZ(calc(var(--cube-size)/2))}
+.face-bottom{transform:rotateX(-90deg) translateZ(calc(var(--cube-size)/2))}
+/* همه وجه‌ها سفید هستند؛ فقط وجه واقعاً معلوم رنگ می‌گیرد */
+.cubie.category-1 .face.known{background:linear-gradient(145deg,#fb7185,#dc2626)}
+.cubie.category-2 .face.known{background:linear-gradient(145deg,#60a5fa,#2563eb)}
+.cubie.category-3 .face.known{background:linear-gradient(145deg,#4ade80,#16a34a)}
+.cubie.category-0 .face{background:linear-gradient(145deg,#fff,#dce6f2)}
+.cubie.custom .face{background:linear-gradient(145deg,#fde68a,#f59e0b);border-color:rgba(120,53,15,.48)}
+.cubie.custom .face.base-face{background:linear-gradient(145deg,#67e8f9,#0ea5e9);border-color:rgba(8,47,73,.68);box-shadow:inset 0 0 0 1px rgba(255,255,255,.30),0 0 7px rgba(14,165,233,.12)}
+.cubie.ghost{visibility:hidden;pointer-events:none}
+.cubie.focus .face{border-color:rgba(15,23,42,.72);box-shadow:inset 0 0 0 1px rgba(255,255,255,.34),0 0 6px rgba(96,165,250,.08)}
+
+/* منشور شیبدار برگرفته از شکل پیوست */
+.wedge{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.wedge-face{position:absolute;transform-style:preserve-3d;backface-visibility:visible;transform-origin:center center;border:1px solid rgba(30,41,59,.82);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+.wedge-back{background-color:#a9cdb1}
+.wedge-bottom{background-color:#84ad90}
+.wedge-slope{background-color:#b8d9bd}
+.wedge-side{background:transparent;border:0;box-shadow:none;overflow:visible}
+.wedge-base-shape{position:absolute;inset:0;background-color:#0ea5e9;background-image:repeating-linear-gradient(90deg,rgba(8,47,73,.55) 0 1px,transparent 1px var(--base-grid-x,38px)),repeating-linear-gradient(0deg,rgba(8,47,73,.55) 0 1px,transparent 1px var(--base-grid-y,38px)),linear-gradient(145deg,#67e8f9,#0ea5e9);border:1.5px solid rgba(8,47,73,.9);box-sizing:border-box;backface-visibility:visible;-webkit-backface-visibility:visible}
+
+.controls{border-radius:var(--radius);padding:11px 13px;display:grid;grid-template-columns:minmax(160px,.75fr) minmax(0,2fr);gap:12px;align-items:center}
+.status{font-size:.82rem;color:#dbeafe;background:rgba(2,8,23,.28);border:1px solid var(--line);padding:9px 11px;border-radius:11px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.actions{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.action{border:1px solid rgba(148,163,184,.17);background:#10233b;color:#cbd5e1;padding:8px 11px;border-radius:11px;cursor:pointer;font-size:.79rem;transition:.2s}
+.action:hover{transform:translateY(-1px);border-color:rgba(96,165,250,.42);color:white}
+.action.active{background:linear-gradient(135deg,#2563eb,#0ea5e9);border-color:transparent;color:#fff;box-shadow:0 8px 18px rgba(37,99,235,.22)}
+.hidden{display:none!important}
+@media (max-width:900px){
+ html,body{height:100%;min-height:0;overflow:hidden}
+ body{overflow:hidden}
+ .app{
+   height:100dvh;
+   min-height:0;
+   overflow:hidden;
+   padding:7px;
+   gap:7px;
+   grid-template-rows:auto auto minmax(0,1fr) auto;
+ }
+ header{padding:8px 10px;align-items:center;border-radius:15px}
+ .brand{gap:8px}
+ .logo{width:34px;height:34px;border-radius:11px;font-size:17px}
+ h1{font-size:.98rem;margin-bottom:2px}
+ .creator{font-size:.67rem}
+ .toolbar{max-width:62%;gap:5px;flex-wrap:nowrap}
+ .select-wrap{padding:5px 7px;font-size:.72rem;gap:5px;min-width:0}
+ select{padding:5px 7px;max-width:150px;font-size:.75rem}
+ .icon-btn{width:34px;height:34px;border-radius:10px;flex:0 0 auto}
+ .top-row{grid-template-columns:minmax(0,1fr) auto;gap:7px;min-height:0}
+ .question{padding:8px 10px;font-size:.76rem;line-height:1.65;border-radius:14px;max-height:72px;overflow:auto}
+ .tabs{padding:4px;gap:4px;border-radius:14px}
+ .tab{padding:7px 9px;font-size:.73rem}
+ .workspace{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr);min-height:0;overflow:hidden}
+ .side-panel{display:none!important}
+ .scene{height:100%;min-height:0;max-height:none;border-radius:16px}
+ .scene-badge{top:8px;right:8px;font-size:.61rem;line-height:1.5;padding:5px 7px;max-width:72%}
+ .controls{padding:7px 8px;grid-template-columns:1fr;gap:7px;border-radius:15px}
+ .status{font-size:.72rem;padding:7px 9px;min-height:31px}
+ .actions{gap:5px;flex-wrap:wrap}
+ .action{font-size:.69rem;padding:6px 8px;border-radius:9px}
+}
+@media (max-width:600px){
+ .app{padding:6px;gap:6px}
+ header{display:flex;padding:7px 8px;gap:8px}
+ .brand{min-width:0;flex:1}
+ .logo{width:32px;height:32px}
+ h1{font-size:.91rem}
+ .creator{font-size:.62rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+ .toolbar{max-width:none;flex:0 0 auto;gap:4px}
+ .select-wrap{padding:4px 6px;min-width:0}
+ .select-wrap>span{display:none}
+ select{max-width:135px;font-size:.7rem;padding:4px 6px}
+ .icon-btn{width:31px;height:31px}
+ .top-row{grid-template-columns:1fr;gap:5px}
+ .question{font-size:.7rem;padding:6px 8px;line-height:1.55;max-height:58px}
+ .tabs{justify-content:center;padding:3px}
+ .tab{font-size:.7rem;padding:6px 8px;flex:1;text-align:center}
+ .scene-badge{font-size:.56rem;max-width:68%}
+ .controls{padding:6px;gap:5px}
+ .status{font-size:.68rem;padding:6px 8px;min-height:28px}
+ .actions{gap:4px}
+ .action{font-size:.65rem;padding:5px 7px}
+}
+@media (max-height:720px) and (max-width:900px){
+ .creator{display:none}
+ header{padding-top:5px;padding-bottom:5px}
+ .question{max-height:48px;line-height:1.45}
+ .tab{padding-top:5px;padding-bottom:5px}
+ .scene-badge{display:none}
+ .controls{padding:5px 6px;gap:4px}
+ .status{padding:5px 7px;min-height:25px}
+ .action{padding:4px 6px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="glass">
+    <div class="brand">
+      <div class="logo">∛</div>
+      <div class="title-wrap">
+        <h1>آزمایشگاه تعاملی هندسه سه‌بعدی</h1>
+        <div class="creator">طراح: مهسا صالحی • بررسی وجه‌های معلوم، حجم و نماها</div>
+      </div>
+    </div>
+    <div class="toolbar">
+      <label class="select-wrap" id="dimensionWrap">
+        <span>ابعاد مکعب</span>
+        <select id="dimensionSelect" aria-label="انتخاب ابعاد مکعب">
+          <option value="2">۲ × ۲ × ۲</option>
+          <option value="3" selected>۳ × ۳ × ۳</option>
+          <option value="4">۴ × ۴ × ۴</option>
+          <option value="5">۵ × ۵ × ۵</option>
+          <option value="6">۶ × ۶ × ۶</option>
+          <option value="7">۷ × ۷ × ۷</option>
+          <option value="8">۸ × ۸ × ۸</option>
+        </select>
+      </label>
+      <label class="select-wrap hidden" id="shapeWrap">
+        <span>انتخاب حجم</span>
+        <select id="shapeSelect" aria-label="انتخاب حجم برای نماها">
+          <option value="stairs40">پلکان ۴ پله‌ای • ۴۰ مکعب</option>
+          <option value="wedge32">حجم شیبدار • ۳۲ واحد مکعب</option>
+          <option value="uwall24">دیوار U شکل • ۲۴ مکعب</option>
+          <option value="chair8">حجم صندلی‌مانند • ۸ مکعب</option>
+          <option value="stairs15">پلکان کوچک قبلی • ۱۵ مکعب</option>
+        </select>
+      </label>
+      <button class="icon-btn" id="resetBtn" title="بازنشانی زاویه و موقعیت" aria-label="بازنشانی زاویه و موقعیت">↺</button>
+      <button class="icon-btn" id="fullscreenBtn" title="تمام‌صفحه" aria-label="تمام‌صفحه">⛶</button>
+    </div>
+  </header>
+
+  <div class="top-row">
+    <div id="questionBox" class="question glass"></div>
+    <div class="tabs glass">
+      <button class="tab active" data-mode="cube">مکعب رنگی</button>
+      <button class="tab" data-mode="views">نماها و احجام</button>
+    </div>
+  </div>
+
+  <main class="workspace">
+    <aside class="side-panel glass">
+      <div class="panel-title"><span>راهنمای رنگ</span><span id="totalCount">۲۷ مکعب</span></div>
+      <div class="legend" id="legend"></div>
+      <div class="formula" id="formulaBox"></div>
+      <div class="control-block">
+        <div class="panel-title"><span>بزرگ‌نمایی</span><span id="zoomLabel">۱۰۰٪</span></div>
+        <div class="range-box">
+          <button id="zoomOut" aria-label="کوچک کردن">−</button>
+          <input id="zoomRange" type="range" min="50" max="165" step="5" value="100" aria-label="بزرگ‌نمایی" />
+          <button id="zoomIn" aria-label="بزرگ کردن">+</button>
+        </div>
+      </div>
+      <div class="control-block">
+        <div class="panel-title"><span>جابه‌جایی بالا / پایین</span><span id="panLabel">۰</span></div>
+        <div class="range-box">
+          <button id="moveDown" aria-label="حرکت به پایین">↓</button>
+          <input id="panRange" type="range" min="-240" max="240" step="10" value="0" aria-label="جابه‌جایی عمودی" />
+          <button id="moveUp" aria-label="حرکت به بالا">↑</button>
+        </div>
+      </div>
+    </aside>
+
+    <section id="scene" class="scene glass" aria-label="محیط سه‌بعدی">
+      <div class="scene-badge">کشیدن: چرخش • Shift + کشیدن: بالا/پایین<br>دو انگشت: جابه‌جایی عمودی • اسکرول: زوم</div>
+      <div id="cube-assembly"></div>
+    </section>
+  </main>
+
+  <footer class="controls glass">
+    <div class="status" id="statusText">مکعب کامل</div>
+    <div class="actions" id="actions"></div>
+  </footer>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const assembly = document.getElementById('cube-assembly');
+  const scene = document.getElementById('scene');
+  const questionBox = document.getElementById('questionBox');
+  const statusText = document.getElementById('statusText');
+  const actions = document.getElementById('actions');
+  const legend = document.getElementById('legend');
+  const formulaBox = document.getElementById('formulaBox');
+  const totalCount = document.getElementById('totalCount');
+  const dimensionSelect = document.getElementById('dimensionSelect');
+  const dimensionWrap = document.getElementById('dimensionWrap');
+  const shapeWrap = document.getElementById('shapeWrap');
+  const shapeSelect = document.getElementById('shapeSelect');
+  const zoomRange = document.getElementById('zoomRange');
+  const zoomLabel = document.getElementById('zoomLabel');
+  const panRange = document.getElementById('panRange');
+  const panLabel = document.getElementById('panLabel');
+
+  let mode = 'cube';
+  let n = 3;
+  let cubes = [];
+  let rotation = {x:-20,y:-45};
+  let zoom = 1;
+  let panY = 0;
+  let currentStep = 0;
+  let cubeSize = 42;
+
+  const fa = v => new Intl.NumberFormat('fa-IR').format(v);
+  const countsFor = size => ({
+    3: size >= 2 ? 8 : 0,
+    2: size >= 3 ? 12 * (size - 2) : 0,
+    1: size >= 3 ? 6 * Math.pow(size - 2, 2) : 0,
+    0: size >= 3 ? Math.pow(size - 2, 3) : 0
+  });
+
+  function preferredCubeSize(size){
+    if(size >= 8) return 27;
+    if(size === 7) return 29;
+    if(size === 6) return 32;
+    if(size === 5) return 35;
+    if(size === 4) return 39;
+    return 42;
+  }
+  function setCubeSize(size){
+    cubeSize = preferredCubeSize(size);
+    document.documentElement.style.setProperty('--cube-size', cubeSize + 'px');
+  }
+
+  function createCubie(x,y,z,category=null,knownSides=[]){
+    const el = document.createElement('div');
+    el.className = 'cubie' + (category === null ? ' custom' : ` category-${category}`);
+    ['front','back','right','left','top','bottom'].forEach(side => {
+      const face = document.createElement('div');
+      face.className = `face face-${side}` + (knownSides.includes(side) ? ' known' : '');
+      el.appendChild(face);
+    });
+    el.dataset.x = x; el.dataset.y = y; el.dataset.z = z;
+    if(category !== null) el.dataset.paintCount = category;
+    assembly.appendChild(el);
+    return el;
+  }
+
+  function updateCubieTransform(el,extraGap=0){
+    const spacing = cubeSize + extraGap;
+    el.style.transform = `translate3d(${Number(el.dataset.x)*spacing}px,${Number(el.dataset.y)*spacing}px,${Number(el.dataset.z)*spacing}px)`;
+  }
+
+  function buildCube(size){
+    setCubeSize(size);
+    assembly.innerHTML = '';
+    cubes = [];
+    const offset = (size - 1) / 2;
+    for(let x=0;x<size;x++) for(let y=0;y<size;y++) for(let z=0;z<size;z++){
+      const px=x-offset, py=y-offset, pz=z-offset;
+      const known=[];
+      if(x===size-1) known.push('right');
+      if(x===0) known.push('left');
+      if(y===size-1) known.push('bottom');
+      if(y===0) known.push('top');
+      if(z===size-1) known.push('front');
+      if(z===0) known.push('back');
+      const c=known.length;
+      const el=createCubie(px,py,pz,c,known);
+      updateCubieTransform(el,0);
+      cubes.push(el);
+    }
+    renderCubeInfo();
+    renderCubeActions();
+    applyCubeStep(0);
+  }
+
+  function renderCubeInfo(){
+    const c=countsFor(n);
+    totalCount.textContent = `${fa(n*n*n)} مکعب`;
+    questionBox.innerHTML = `<strong>مکعب ${fa(n)}×${fa(n)}×${fa(n)}</strong> به مکعب‌های واحد تقسیم شده است. در هر مکعب کوچک فقط وجه‌هایی که روی سطح بیرونی حجم اصلی قرار دارند رنگی‌اند؛ بقیه‌ی وجه‌ها سفید باقی می‌مانند.`;
+    const items = [
+      [3,'سه وجه معلوم','var(--green)'],
+      [2,'دو وجه معلوم','var(--blue)'],
+      [1,'یک وجه معلوم','var(--red)'],
+      [0,'هیچ وجهی معلوم نیست','var(--white)']
+    ];
+    legend.innerHTML='';
+    items.forEach(([key,label,color])=>{
+      const item=document.createElement('div');
+      item.className='legend-item';
+      item.dataset.category=key;
+      item.innerHTML=`<span class="dot" style="background:${color}"></span><span>${label}</span><span class="count">${fa(c[key])}</span>`;
+      item.onclick=()=>filterCategory(Number(key),item);
+      legend.appendChild(item);
+    });
+    formulaBox.innerHTML = `<b>منطق نمایش وجه‌ها</b><br>۳ وجه معلوم: فقط همان ۳ وجه سبز<br>۲ وجه معلوم: فقط همان ۲ وجه آبی<br>۱ وجه معلوم: فقط همان ۱ وجه قرمز<br>۰ وجه معلوم: همه‌ی ۶ وجه سفید<br><br><b>شمارش برای n=${fa(n)}</b><br>سه‌وجهی: ۸ • دو‌وجهی: ${fa(c[2])} • یک‌وجهی: ${fa(c[1])} • بدون وجه: ${fa(c[0])}`;
+  }
+
+  function renderCubeActions(){
+    const c=countsFor(n);
+    const defs=[
+      ['مکعب کامل',0],['تفکیک مکعب‌ها',1],
+      [`۳ وجه • ${fa(c[3])}`,2],[`۲ وجه • ${fa(c[2])}`,3],
+      [`۱ وجه • ${fa(c[1])}`,4],[`۰ وجه • ${fa(c[0])}`,5]
+    ];
+    actions.innerHTML='';
+    defs.forEach(([label,step],i)=>{
+      const b=document.createElement('button');
+      b.className='action'+(i===0?' active':'');
+      b.textContent=label;
+      b.onclick=()=>{ applyCubeStep(step); setActiveAction(b); };
+      actions.appendChild(b);
+    });
+  }
+
+  function setActiveAction(btn){
+    actions.querySelectorAll('.action').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    legend.querySelectorAll('.legend-item').forEach(i=>i.classList.remove('active'));
+  }
+
+  function applyCubeStep(step){
+    currentStep=step;
+    const exploded = step === 1;
+    const extraGap = exploded ? Math.max(8,Math.round(cubeSize*.42)) : 0;
+    let visible=0;
+    cubes.forEach(el=>{
+      updateCubieTransform(el,extraGap);
+      const p=Number(el.dataset.paintCount);
+      let show=true;
+      if(step===2) show=p===3;
+      if(step===3) show=p===2;
+      if(step===4) show=p===1;
+      if(step===5) show=p===0;
+      el.classList.toggle('ghost',!show);
+      el.classList.toggle('focus',show && step>1);
+      if(show) visible++;
+    });
+    const labels={
+      0:'مکعب کامل؛ فقط وجه‌های بیرونی هر مکعب کوچک رنگی‌اند',
+      1:`تفکیک ${fa(cubes.length)} مکعب کوچک؛ وجه‌های داخلی سفید هستند`,
+      2:`سه وجه معلوم: ${fa(visible)} مکعب کامل • هر مکعب ۳ وجه سبز و ۳ وجه سفید`,
+      3:`دو وجه معلوم: ${fa(visible)} مکعب کامل • هر مکعب ۲ وجه آبی و ۴ وجه سفید`,
+      4:`یک وجه معلوم: ${fa(visible)} مکعب کامل • هر مکعب ۱ وجه قرمز و ۵ وجه سفید`,
+      5:`هیچ وجهی معلوم نیست: ${fa(visible)} مکعب کامل • همه‌ی ۶ وجه سفید`
+    };
+    statusText.textContent=labels[step];
+  }
+
+  function filterCategory(category,item){
+    const stepMap={3:2,2:3,1:4,0:5};
+    applyCubeStep(stepMap[category]);
+    actions.querySelectorAll('.action').forEach((b,i)=>b.classList.toggle('active',i===stepMap[category]));
+    legend.querySelectorAll('.legend-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+  }
+
+  function centerStructure(points){
+    const xs=points.map(p=>p.x), ys=points.map(p=>p.y), zs=points.map(p=>p.z);
+    const cx=(Math.min(...xs)+Math.max(...xs))/2;
+    const cy=(Math.min(...ys)+Math.max(...ys))/2;
+    const cz=(Math.min(...zs)+Math.max(...zs))/2;
+    return points.map(p=>({x:p.x-cx,y:p.y-cy,z:p.z-cz}));
+  }
+
+  function stairs40(){
+    const pts=[];
+    for(let z=0;z<4;z++){
+      const h=4-z;
+      for(let x=0;x<4;x++) for(let level=0;level<h;level++) pts.push({x,y:-level,z});
+    }
+    return centerStructure(pts);
+  }
+  function stairs15(){
+    const raw=[
+      {x:-1,y:1,z:-1},{x:0,y:1,z:-1},{x:1,y:1,z:-1},
+      {x:-1,y:1,z:0},{x:0,y:1,z:0},{x:1,y:1,z:0},
+      {x:-1,y:1,z:1},{x:0,y:1,z:1},{x:1,y:1,z:1},
+      {x:-1,y:0,z:-1},{x:0,y:0,z:-1},{x:1,y:0,z:-1},
+      {x:-1,y:0,z:0},{x:0,y:0,z:0},{x:1,y:0,z:0}
+    ];
+    return centerStructure(raw);
+  }
+  function uwall24(){
+    const pts=[];
+    const floor=[];
+    for(let x=0;x<6;x++) floor.push({x,z:0});
+    for(let z=1;z<4;z++){floor.push({x:0,z});floor.push({x:5,z});}
+    floor.forEach(p=>{pts.push({x:p.x,y:0,z:p.z});pts.push({x:p.x,y:-1,z:p.z});});
+    return centerStructure(pts);
+  }
+  function chair8(){
+    const pts=[];
+    for(let z=0;z<3;z++){
+      const h=z===2?2:1;
+      for(let x=0;x<2;x++) for(let level=0;level<h;level++) pts.push({x,y:-level,z});
+    }
+    return centerStructure(pts);
+  }
+
+  const shapeMeta={
+    stairs40:{title:'پلکان چهارپله‌ای',desc:'بازسازی حجم پلکانی سمت چپ تصویر پیوست؛ چهار مکعب عرض دارد و ارتفاع پله‌ها ۴، ۳، ۲ و ۱ است.',count:40,kind:'cubes',build:stairs40,baseAxis:'x'},
+    wedge32:{title:'حجم شیبدار',desc:'بازسازی حجم شیبدار تصویر پیوست به صورت منشور با مقطع مثلث قائم‌الزاویه ۴×۴ و عرض ۴؛ سطح شیبدار از ارتفاع ۴ به صفر می‌رسد و حجم ۳۲ واحد مکعب است.',count:32,kind:'wedge'},
+    uwall24:{title:'دیوار U شکل',desc:'بازسازی دیوار U شکل دوطبقه از تصویر پیوست؛ دیوار یک مکعب ضخامت دارد.',count:24,kind:'cubes',build:uwall24,baseAxis:'y'},
+    chair8:{title:'حجم صندلی‌مانند',desc:'بازسازی حجم سمت راست تصویر پیوست؛ پایه ۲×۳ و ردیف پشتی دو طبقه است.',count:8,kind:'cubes',build:chair8,baseAxis:'x'},
+    stairs15:{title:'پلکان کوچک',desc:'حجم پلکانی نسخه قبلی برنامه برای تمرین نماها.',count:15,kind:'cubes',build:stairs15,baseAxis:'x'}
+  };
+
+  function buildCubeStructure(points,baseAxis='x'){
+    setCubeSize(points.length>30?34:42);
+    assembly.innerHTML=''; cubes=[];
+    const vals=points.map(p=>Number(p[baseAxis]));
+    const minV=Math.min(...vals), maxV=Math.max(...vals);
+    const eps=.001;
+    const sideMap={
+      x:{min:'left',max:'right'},
+      y:{min:'top',max:'bottom'},
+      z:{min:'back',max:'front'}
+    };
+    const sides=sideMap[baseAxis]||sideMap.x;
+    points.forEach(p=>{
+      const el=createCubie(p.x,p.y,p.z,null,[]);
+      const v=Number(p[baseAxis]);
+      if(Math.abs(v-minV)<eps) el.querySelector(`.face-${sides.min}`)?.classList.add('base-face');
+      if(Math.abs(v-maxV)<eps) el.querySelector(`.face-${sides.max}`)?.classList.add('base-face');
+      updateCubieTransform(el,0);
+      cubes.push(el);
+    });
+  }
+
+  function buildWedge(){
+    setCubeSize(38);
+    assembly.innerHTML=''; cubes=[];
+    const unit=cubeSize;
+    const W=unit*4, H=unit*4, D=unit*4;
+    const L=Math.hypot(H,D);
+    const angle=Math.atan2(D,H)*180/Math.PI;
+    const wedge=document.createElement('div');
+    wedge.className='wedge';
+
+    const face=(cls,w,h)=>{
+      const el=document.createElement('div');
+      el.className=`wedge-face ${cls}`;
+      el.style.width=w+'px';
+      el.style.height=h+'px';
+      el.style.left=(-w/2)+'px';
+      el.style.top=(-h/2)+'px';
+      return el;
+    };
+    const grid=(uX,uY)=>`repeating-linear-gradient(90deg,rgba(30,41,59,.62) 0 1px,transparent 1px ${uX}px),repeating-linear-gradient(0deg,rgba(30,41,59,.62) 0 1px,transparent 1px ${uY}px)`;
+
+    // پشت عمودی منشور: ۴ × ۴
+    const back=face('wedge-back',W,H);
+    back.style.transform=`translate3d(0,0,${-D/2}px)`;
+    back.style.backgroundImage=grid(unit,unit);
+
+    // کف: ۴ × ۴
+    const bottom=face('wedge-bottom',W,D);
+    bottom.style.transform=`translate3d(0,${H/2}px,0) rotateX(90deg)`;
+    bottom.style.backgroundImage=grid(unit,unit);
+
+    // سطح شیبدار اصلی. مرکز آن مبدأ است و دو سرش دقیقاً
+    // از لبه بالایی پشت تا لبه جلویی کف امتداد دارد.
+    const slope=face('wedge-slope',W,L);
+    slope.style.transform=`translate3d(0,0,0) rotateX(${angle}deg) translateZ(.35px)`;
+    slope.style.backgroundImage=grid(unit,L/4);
+
+    // یک نسخه پشتِ همان سطح برای نمایش مطمئن روی مرورگرهای موبایل.
+    const slopeBack=face('wedge-slope',W,L);
+    slopeBack.style.transform=`translate3d(0,0,0) rotateX(${angle+180}deg) translateZ(.35px)`;
+    slopeBack.style.backgroundImage=grid(unit,L/4);
+
+    // دو قاعده مثلثی منشور. خود صفحه سه‌بعدی clip نمی‌شود؛
+    // clip-path فقط روی یک فرزند دوبعدی اعمال می‌شود تا در WebView موبایل رنگ قاعده از بین نرود.
+    const baseFace=(side,transform,points)=>{
+      const holder=face('wedge-side',D,H);
+      holder.style.transform=transform;
+      const ns='http://www.w3.org/2000/svg';
+      const svg=document.createElementNS(ns,'svg');
+      svg.setAttribute('viewBox',`0 0 ${D} ${H}`);
+      svg.setAttribute('preserveAspectRatio','none');
+      svg.style.position='absolute';
+      svg.style.inset='0';
+      svg.style.width='100%';
+      svg.style.height='100%';
+      svg.style.overflow='visible';
+      svg.style.backfaceVisibility='visible';
+      svg.style.webkitBackfaceVisibility='visible';
+
+      const defs=document.createElementNS(ns,'defs');
+      const grad=document.createElementNS(ns,'linearGradient');
+      const gradId=`wedgeBaseGrad-${side}-${Math.random().toString(36).slice(2)}`;
+      grad.setAttribute('id',gradId);
+      grad.setAttribute('x1','0%'); grad.setAttribute('y1','0%');
+      grad.setAttribute('x2','100%'); grad.setAttribute('y2','100%');
+      const st1=document.createElementNS(ns,'stop'); st1.setAttribute('offset','0%'); st1.setAttribute('stop-color','#67e8f9');
+      const st2=document.createElementNS(ns,'stop'); st2.setAttribute('offset','100%'); st2.setAttribute('stop-color','#0284c7');
+      grad.append(st1,st2);
+      const cp=document.createElementNS(ns,'clipPath');
+      const cpId=`wedgeBaseClip-${side}-${Math.random().toString(36).slice(2)}`;
+      cp.setAttribute('id',cpId);
+      const cpPoly=document.createElementNS(ns,'polygon');
+      cpPoly.setAttribute('points',points);
+      cp.appendChild(cpPoly);
+      defs.append(grad,cp);
+      svg.appendChild(defs);
+
+      const poly=document.createElementNS(ns,'polygon');
+      poly.setAttribute('points',points);
+      poly.setAttribute('fill',`url(#${gradId})`);
+      poly.setAttribute('stroke','#075985');
+      poly.setAttribute('stroke-width','1.6');
+      poly.setAttribute('vector-effect','non-scaling-stroke');
+      svg.appendChild(poly);
+
+      const gridGroup=document.createElementNS(ns,'g');
+      gridGroup.setAttribute('clip-path',`url(#${cpId})`);
+      gridGroup.setAttribute('stroke','rgba(8,47,73,.62)');
+      gridGroup.setAttribute('stroke-width','1');
+      gridGroup.setAttribute('vector-effect','non-scaling-stroke');
+      for(let i=1;i<4;i++){
+        const vx=document.createElementNS(ns,'line');
+        vx.setAttribute('x1',String(i*unit)); vx.setAttribute('y1','0');
+        vx.setAttribute('x2',String(i*unit)); vx.setAttribute('y2',String(H));
+        gridGroup.appendChild(vx);
+        const hy=document.createElementNS(ns,'line');
+        hy.setAttribute('x1','0'); hy.setAttribute('y1',String(i*unit));
+        hy.setAttribute('x2',String(D)); hy.setAttribute('y2',String(i*unit));
+        gridGroup.appendChild(hy);
+      }
+      svg.appendChild(gridGroup);
+      holder.appendChild(svg);
+      holder.dataset.base=side;
+      return holder;
+    };
+
+    const left=baseFace('left',`translate3d(${-W/2}px,0,0) rotateY(90deg) translateZ(.6px)`,`0,${H} ${D},0 ${D},${H}`);
+    const right=baseFace('right',`translate3d(${W/2}px,0,0) rotateY(-90deg) translateZ(.6px)`,`0,0 ${D},${H} 0,${H}`);
+
+    wedge.append(back,bottom,slope,slopeBack,left,right);
+    assembly.appendChild(wedge);
+  }
+
+  function buildViews(){
+    const key=shapeSelect.value;
+    const meta=shapeMeta[key];
+    if(meta.kind==='wedge') buildWedge(); else buildCubeStructure(meta.build(),meta.baseAxis||'x');
+    totalCount.textContent=meta.kind==='wedge'?`${fa(meta.count)} واحد مکعب`:`${fa(meta.count)} مکعب`;
+    questionBox.innerHTML=`<strong>${meta.title}:</strong> ${meta.desc} حجم را بچرخانید، بالا و پایین ببرید یا یکی از نماهای استاندارد را انتخاب کنید.`;
+    legend.innerHTML=`<div class="legend-item"><span class="dot" style="background:#0ea5e9"></span><span>دو قاعده حجم</span></div><div class="legend-item"><span class="dot" style="background:${meta.kind==='wedge'?'#b8d9bd':'#f59e0b'}"></span><span>سایر سطوح</span><span class="count">${fa(meta.count)}</span></div>`;
+    if(key==='wedge32') formulaBox.innerHTML='<b>محاسبه حجم شیبدار</b><br>دو وجه مثلثی آبی = دو قاعده منشور<br>مساحت هر قاعده: ½×۴×۴ = ۸<br>طول منشور: ۴<br>حجم: ۸×۴ = ۳۲ واحد مکعب';
+    else formulaBox.innerHTML='<b>فعالیت نماها</b><br>قبل از انتخاب هر نما، شکل دوبعدی حاصل را حدس بزنید. سپس نمای روبرو، پشت، بالا، پایین و جانبی را برای بررسی پاسخ انتخاب کنید.';
+    renderViewActions();
+    statusText.textContent=`نمای سه‌بعدی آزاد • ${meta.title}`;
+    resetView(false);
+    if(key==='wedge32'){
+      rotation={x:-24,y:-28};
+      zoom=Math.min(zoom,.92);
+      zoomRange.value=Math.round(zoom*100);
+      zoomLabel.textContent=`${fa(Math.round(zoom*100))}٪`;
+      updateTransform();
+    }
+  }
+
+  function renderViewActions(){
+    actions.innerHTML='';
+    [['سه‌بعدی آزاد','reset'],['روبرو','front'],['پشت','back'],['بالا','top'],['پایین','bottom'],['جانبی','side']].forEach(([label,act],i)=>{
+      const b=document.createElement('button');
+      b.className='action'+(i===0?' active':'');
+      b.textContent=label;
+      b.onclick=()=>{applyView(act);setActiveAction(b)};
+      actions.appendChild(b);
+    });
+  }
+
+  function applyView(action){
+    if(action==='reset'){rotation={x:-20,y:-45};statusText.textContent='نمای سه‌بعدی آزاد';}
+    if(action==='front'){rotation={x:0,y:0};statusText.textContent='نمای روبرو';}
+    if(action==='back'){rotation={x:0,y:180};statusText.textContent='نمای پشت';}
+    if(action==='top'){rotation={x:90,y:0};statusText.textContent='نمای بالا';}
+    if(action==='bottom'){rotation={x:-90,y:0};statusText.textContent='نمای پایین';}
+    if(action==='side'){rotation={x:0,y:-90};statusText.textContent='نمای جانبی';}
+    updateTransform();
+  }
+
+  function resetView(resetPan=true){
+    rotation={x:-20,y:-45};
+    if(resetPan){panY=0;panRange.value=0;panLabel.textContent='۰';}
+    updateTransform();
+  }
+  function updateTransform(){
+    assembly.style.transform=`translate3d(0,${panY}px,0) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) scale(${zoom})`;
+  }
+  function setZoom(value){
+    zoom=Math.min(1.65,Math.max(.5,value));
+    zoomRange.value=Math.round(zoom*100);
+    zoomLabel.textContent=`${fa(Math.round(zoom*100))}٪`;
+    updateTransform();
+  }
+  function setPan(value){
+    panY=Math.min(240,Math.max(-240,value));
+    panRange.value=Math.round(panY/10)*10;
+    panLabel.textContent=panY===0?'۰':`${panY<0?'↑':'↓'} ${fa(Math.abs(Math.round(panY)))}`;
+    updateTransform();
+  }
+
+  document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    mode=tab.dataset.mode;
+    dimensionWrap.classList.toggle('hidden',mode!=='cube');
+    shapeWrap.classList.toggle('hidden',mode!=='views');
+    resetView();
+    if(mode==='cube') buildCube(n); else buildViews();
+  }));
+
+  dimensionSelect.addEventListener('change',()=>{n=Number(dimensionSelect.value);resetView();buildCube(n)});
+  shapeSelect.addEventListener('change',()=>{resetView();buildViews()});
+  document.getElementById('resetBtn').onclick=()=>{resetView();setZoom(1); if(mode==='views')statusText.textContent='نمای سه‌بعدی آزاد';};
+  document.getElementById('fullscreenBtn').onclick=async()=>{
+    try{ if(!document.fullscreenElement) await document.documentElement.requestFullscreen(); else await document.exitFullscreen(); }catch(e){}
+  };
+  document.getElementById('zoomIn').onclick=()=>setZoom(zoom+.1);
+  document.getElementById('zoomOut').onclick=()=>setZoom(zoom-.1);
+  zoomRange.addEventListener('input',()=>setZoom(Number(zoomRange.value)/100));
+  document.getElementById('moveUp').onclick=()=>setPan(panY-20);
+  document.getElementById('moveDown').onclick=()=>setPan(panY+20);
+  panRange.addEventListener('input',()=>setPan(Number(panRange.value)));
+  scene.addEventListener('wheel',e=>{e.preventDefault();setZoom(zoom+(e.deltaY<0?.05:-.05))},{passive:false});
+
+  let dragging=false,last={x:0,y:0},dragMode='rotate',touchPanStart=null;
+  const start=(x,y,pan=false)=>{dragging=true;last={x,y};dragMode=pan?'pan':'rotate'};
+  const move=(x,y)=>{
+    if(!dragging)return;
+    if(dragMode==='pan'){
+      setPan(panY+(y-last.y));
+    }else{
+      rotation.y+=(x-last.x)*.45;
+      rotation.x-=(y-last.y)*.45;
+      rotation.x=Math.max(-90,Math.min(90,rotation.x));
+      updateTransform();
+      if(mode==='views')statusText.textContent='چرخش دستی';
+    }
+    last={x,y};
+  };
+  const end=()=>{dragging=false;touchPanStart=null};
+  scene.addEventListener('mousedown',e=>start(e.clientX,e.clientY,e.shiftKey));
+  window.addEventListener('mousemove',e=>move(e.clientX,e.clientY));
+  window.addEventListener('mouseup',end);
+  scene.addEventListener('touchstart',e=>{
+    if(e.touches.length===1) start(e.touches[0].clientX,e.touches[0].clientY,false);
+    else if(e.touches.length>=2){
+      dragging=false;
+      touchPanStart={y:(e.touches[0].clientY+e.touches[1].clientY)/2,pan:panY};
+    }
+  },{passive:false});
+  scene.addEventListener('touchmove',e=>{
+    if(e.touches.length===1 && dragging){e.preventDefault();move(e.touches[0].clientX,e.touches[0].clientY);}
+    else if(e.touches.length>=2 && touchPanStart){
+      e.preventDefault();
+      const y=(e.touches[0].clientY+e.touches[1].clientY)/2;
+      setPan(touchPanStart.pan+(y-touchPanStart.y));
+    }
+  },{passive:false});
+  window.addEventListener('touchend',end,{passive:true});
+
+  buildCube(n);
+})();
+</script>
+</body>
+</html>
